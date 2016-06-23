@@ -43,11 +43,10 @@ popAll :: [[a]] -> [[a]]
 popAll = map dropOne
 
 toRuns :: [Integer] -> [[Integer]]
-toRuns list = fillIn (group (sort list))
+toRuns = fillIn . group . sort
     where
         fillIn list = map (existingOrEmpty list) [0..9]
-        existingOrEmpty list n = if (length result) > 0 then (head result) else []
-            where result = filter (\x -> (head x) == n) list
+        existingOrEmpty list n = maybe [] id (find (\x -> (head x) == n) list)
 
 histogram :: [Integer] -> String
 histogram list = histogramInner (toRuns list) ++ "\n==========\n0123456789\n"
