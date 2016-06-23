@@ -53,6 +53,6 @@ histogram list = histogramInner (toRuns list) ++ "\n==========\n0123456789\n"
     where
         histogramInner list
             | noneLeft    = ""
-            | otherwise   = (histogramInner (popAll list)) ++ "\n" ++ (foldl (++) "" (map starIfNonEmpty list))
+            | otherwise   = (histogramInner (popAll list)) ++ "\n" ++ (foldr (++) "" (map starIfNonEmpty list))
             where noneLeft = all (\x -> (length x) == 0) list
                   starIfNonEmpty list = if (length list) > 0 then "*" else " "
