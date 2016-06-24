@@ -1,3 +1,7 @@
+import Data.List
+
+-- Ex. 1
+
 fun1 :: [Integer] -> Integer
 fun1 []         = 1
 fun1 (x:xs)
@@ -20,7 +24,7 @@ fun2' = sum . filter even . takeWhile (>1) . iterate step
     where
         step x = if (even x) then (div x 2) else (3 * x + 1)
 
-
+-- Ex. 2
 
 data Tree a = Leaf | Node Integer (Tree a) a (Tree a)
     deriving (Show, Eq)
@@ -42,3 +46,30 @@ balancedInsert x (Node height left value right)
 
 foldTree :: [a] -> Tree a
 foldTree = foldr balancedInsert Leaf
+
+-- Ex. 3
+
+xor :: Bool -> Bool -> Bool
+xor a b = (a && (not b)) || ((not a) && b)
+
+lxor :: [Bool] -> Bool
+lxor = foldr xor False
+
+-- Could also do this; seems much better
+lxor' :: [Bool] -> Bool
+lxor' = odd . length . filter id
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr ((:) . f) []
+
+foldl' :: (a -> b -> a) -> a -> [b] -> a
+foldl' f base xs = foldr (flip f) base (reverse xs)
+
+
+-- Ex. 4
+
+cartProd :: [a] -> [b] -> [(a,b)]
+cartProd as bs = [(x, y) | x <- as, y <- bs]
+
+sieve :: Integer -> [Integer]
+sieve n = map (\x -> 2*x+1) . ([1..n] \\) . filter (<= n) . map (\(i,j) -> i+j+2*i*j) $ (cartProd [1..n] [1..n])
