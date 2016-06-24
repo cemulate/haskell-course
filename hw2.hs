@@ -31,10 +31,15 @@ inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf                         = []
 inOrder (Node left message right)    = (inOrder left) ++ [message] ++ (inOrder right)
 
-whatWentWrong :: [LogMessage] -> [String]
-whatWentWrong []       = []
-whatWentWrong (x:xs)   = (messageIfImportant x) ++ (whatWentWrong xs)
+extractImportant :: [LogMessage] -> [LogMessage]
+extractImportant []       = []
+extractImportant (x:xs)   = (messageIfImportant x) ++ (extractImportant xs)
     where
         messageIfImportant x = case x of
-            (LogMessage (Error sev) _ message) -> (if (sev >= 50) then [message] else [])
-            other                              -> []
+            message@(LogMessage (Error sev) _ _) -> (if (sev >= 50) then [message] else [])
+            other                                -> []
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong list = map toMessage (extractImportant (inOrder (build list)))
+    where
+        toMessage (LogMessage _ _ message) = message
