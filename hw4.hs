@@ -17,7 +17,7 @@ fun2 n
 -- Reimplement in better Haskell style:
 
 fun1' :: [Integer] -> Integer
-fun1' = product . map ((-) 2) . filter even
+fun1' = product . map (subtract 2) . filter even
 
 fun2' :: Integer -> Integer
 fun2' = sum . filter even . takeWhile (>1) . iterate step
