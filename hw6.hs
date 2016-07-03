@@ -1,4 +1,5 @@
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances
+           , OverlappingInstances #-}
 
 -- Ex. 1
 
@@ -53,6 +54,16 @@ ruler = interleaveStreams (streamRepeat 0) (streamMap calcRuler $ streamSeed (+2
 -- Extra (Generating functions)
 
 type GFunc = Stream Integer
+
+instance Show GFunc where
+    show s = polyTerm False 0 (take 10 . streamToList $ s)
+        where
+            polyTerm _ _ []     = " ..."
+            polyTerm hit n (0:xs) = polyTerm hit (n+1) xs
+            polyTerm hit n (x:xs)
+                | n == 0    = (if hit then " + " else "") ++ (show x) ++ polyTerm True (n+1) xs
+                | n == 1    = (if hit then " + " else "") ++ (show x) ++ "x" ++ polyTerm True (n+1) xs
+                | otherwise = (if hit then " + " else "") ++ (show x) ++ "x^" ++ (show n) ++ polyTerm True (n+1) xs
 
 x :: GFunc
 x = Stream 0 (Stream 1 (streamRepeat 0))
